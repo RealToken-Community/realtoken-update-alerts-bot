@@ -1,0 +1,13 @@
+.env
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+.venv/
+.vscode/
+*.log
+user_configurations.json
+tokenHistory_testing.json

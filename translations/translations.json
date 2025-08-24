@@ -1,0 +1,81 @@
+{
+  "English": {
+    "select_language_prompt": "🌐 Please select your language:\n",
+    "language_set": "Language set to English.",
+    "ready": "You’ll now receive a notification each time a RealToken is updated. Use the menu to choose which types of updates you’d like to get.",
+
+    "menu.notification_settings": "🔔 Notification settings",
+    "menu.set_language": "🌐 Set language",
+
+    "notifications.title": "🔔 *Your Notification Settings* 🔔",
+    "notifications.types.header": "1️⃣ *Notification types:*",
+    "notifications.types.income": "*Income update* _(rents, interest, ...)_",
+    "notifications.types.price": "*Token price update*",
+    "notifications.types.other": "*Other update* _(renovation reserve, ...)_",
+
+    "notifications.scope.header": "2️⃣ *Realtoken scope:* {scope}",
+    "notifications.scope.legend": "ⓘ _Set to_ *All* _to receive alerts for every RealToken, or set to_ *Wallet* _to receive alerts only for RealTokens currently in your wallet._",
+
+    "notifications.cta": "Tap below to edit your settings:",
+
+    "notifications.btn.types": "🔔 Notification Types",
+    "notifications.btn.scope": "🎯 RealToken Scope",
+    "notifications.btn.close": "✖ Close",
+  
+    "notifications.closed": "Notification settings closed",
+
+    "notifications.types.income_short": "Income Update",
+    "notifications.types.price_short": "Token price Update",
+    "notifications.types.other_short": "Other Update",
+    "notifications.types.screen.title": "🔔 *Notification Types*",
+    "notifications.types.screen.help": "Tap to toggle ✔ / ✖",
+
+    "notifications.scope.screen.title": "🎯 *Token Scope*",
+    "notifications.scope.screen.help": "Choose how alerts are scoped: all Realtokens or only those in your wallet:",
+    "notifications.scope.all_short": "All",
+    "notifications.scope.wallet_short": "Wallet",
+    "notifications.scope.manage_wallet": "⚙️ Manage Wallet",
+    "notifications.scope.manage_wallet.description_with_wallet": "Tap on one of your wallet to remove it or add a new one",
+    "notifications.scope.manage_wallet.description_without_wallet": "Add a new wallet below",
+    "notifications.scope.manage_wallet.enter_new_wallet": "Please enter a new wallet address:",
+    "notifications.scope.manage_wallet.invalid_address": "Invalid address. EVM address must be with format '0x...')",
+    "notifications.scope.add_wallet": "➕ Add a wallet",
+
+
+    "notifications.btn.back": "⬅ Back",
+
+    "updates.header": "🔔🆕 __Update for *{name}*__",
+
+    "updates.token_price.title": "{icon} *Token price*:",
+    "updates.token_price.line": "${old:.2f} → *${new:.2f}* ({arrow} *{pct:.2f}*%)",
+
+    "updates.income.title": "{icon} *Income*:",
+    "updates.income.line": "{old:.2f}% → *{new:.2f}%* ({arrow} *{pct:.2f}*%)",
+
+    "updates.underlying_asset.title": "{icon} *Underlying asset price*:",
+    "updates.underlying_asset.line": "${old:.0f} → *${new:.0f}* ({arrow} *{pct:.2f}*%)",
+
+    "updates.initial_maintenance.title": "{icon} *Initial maintenance reserve*:",
+    "updates.initial_maintenance.line": "${old:.0f} → *${new:.0f}* ({arrow} *{pct:.2f}*%)",
+    "updates.initial_maintenance.line_no_pct": "${old:.0f} → *${new:.0f}*",
+
+    "updates.renovation_reserve.title": "{icon} *Renovation reserve*:",
+    "updates.renovation_reserve.line": "${old:.0f} → *${new:.0f}* ({arrow} *{pct:.2f}*%)",
+    "updates.renovation_reserve.line_no_pct": "${old:.0f} → *${new:.0f}*",
+
+    "updates.rented_units.title": "{icon} *Rented units*:",
+    "updates.rented_units.line": "{old:.0f} → *{new:.0f}* ({arrow} *{pct:.2f}*%)",
+    "updates.rented_units.line_no_pct": "{old:.0f} → *{new:.0f}*"
+  },
+  "Français": {
+    "select_language_prompt": "🌐 Veuillez sélectionner votre langue:\n",
+    "language_set": "Langue définie sur le français.",
+
+    "menu.notification_settings": "🔔 Paramètres de notification",
+    "menu.set_language": "🌐 Définir votre langue"
+  },
+  "Español": {
+    "select_language_prompt": "🌐 Por favor, seleccione su idioma:\n",
+    "language_set": "Idioma configurado a español."
+  }
+}
