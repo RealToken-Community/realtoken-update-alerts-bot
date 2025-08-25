@@ -124,6 +124,7 @@ def get_balances_of_realtokens(
     return balances_result
 
 # test case
+# python -m bot.balances.get_balances_of_realtokens
 if __name__ == "__main__":
     import json
     from pprint import pprint
@@ -144,7 +145,11 @@ if __name__ == "__main__":
         "0xca543f90a221dac783490bfee4a1173ae07547c2",
         "0x3409a6d40335617927b9116fad5fa743d168ec39",
     ]
-    tokens = [uuid for uuid in realtoken_data.keys()]
+    tokens = [
+        uuid
+        for uuid, data in realtoken_data.items()
+        if data.get("gnosisContract") is not None
+    ]
     
     
     balances = get_balances_of_realtokens(

@@ -5,8 +5,8 @@ from bot.services.utilities import merge_user_token_balances
 
 from web3 import Web3
 
-#from bot.services.logging_config import get_logger
-#logger = get_logger(__name__)
+from bot.services.logging_config import get_logger
+logger = get_logger(__name__)
 
 async def update_realtoken_owned(app: Application) -> None:
     """
@@ -32,9 +32,15 @@ async def update_realtoken_owned(app: Application) -> None:
     # Convert back to list if needed
     unique_wallets: List[str] = list(wallets_set)
 
+    realtokens_uuid = [
+        uuid
+        for uuid, data in realtokens_list.items()
+        if data.get("gnosisContract") is not None
+    ]
+
     balances_realtokens = get_balances_of_realtokens(
         users_addresses=unique_wallets,
-        realtoken_contract_addresses=[uuid for uuid in realtokens_list.keys()],
+        realtoken_contract_addresses=realtokens_uuid,
         abi_realtoken=abis["realtoken"],
         abi_multicall3=abis["multicall3"],
     )
@@ -58,3 +64,5 @@ async def update_realtoken_owned(app: Application) -> None:
         prefs.token_scope["realtokens_owned"] = list(realtoken_owned_user)
     
     user_manager.save_to_file()
+
+    logger.info(f'Realtoken owned updated for {len(unique_wallets)} wallets')

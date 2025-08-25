@@ -14,9 +14,15 @@ def update_realtokens_owned_single_wallet(context: ContextTypes.DEFAULT_TYPE, ad
     abis = context.application.bot_data['abis']
     realtokens_list = context.application.bot_data['realtokens']
 
+    realtokens_uuid = [
+        uuid
+        for uuid, data in realtokens_list.items()
+        if data.get("gnosisContract") is not None
+    ]
+
     balances_realtokens = get_balances_of_realtokens(
         users_addresses=[addr_norm],
-        realtoken_contract_addresses=[uuid for uuid in realtokens_list.keys()],
+        realtoken_contract_addresses=realtokens_uuid,
         abi_realtoken=abis["realtoken"],
         abi_multicall3=abis["multicall3"],
     )
