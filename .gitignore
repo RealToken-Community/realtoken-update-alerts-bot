@@ -10,4 +10,4 @@ venv/
 .vscode/
 *.log
 user_configurations.json
-tokenHistory_testing.json
+tokenHistory_testing*.json
