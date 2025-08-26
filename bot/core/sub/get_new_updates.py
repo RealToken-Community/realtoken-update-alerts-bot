@@ -51,6 +51,8 @@ def get_new_updates(app: Any, current_payload: Dict[str, Any], previous_history_
         hist = histories_by_uuid.get(uuid, [])
         if not hist:
             continue
+
+        hist = sorted(hist, key=lambda x: str(x.get("date") or "")) # make sure hist are sorted by ascending date
     
         old_len = int(previous_history_state[uuid].get("last_seen_len", 0))
         new_len = int(new_history_state[uuid].get("last_seen_len", 0))
