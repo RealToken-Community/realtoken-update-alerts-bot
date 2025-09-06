@@ -182,7 +182,7 @@ def build_manage_wallet_keyboard(i18n, user_id: int, user_manager) -> InlineKeyb
     # One line per wallet; callback placeholders for future logic
     rows = []
     for idx, w in enumerate(wallets, start=1):
-        label = f"{_short_addr(w)}"
+        label = f"🗑️ {_short_addr(w)}"
         rows.append([InlineKeyboardButton(label, callback_data=f"{CALLBACK_PREFIX}:wallet:{idx}")])
 
     # Add the "Add a wallet" and "Back" buttons
@@ -347,9 +347,11 @@ async def handle_notifications_settings_callback(update: Update, context: Contex
         # If no wallets remain, clear realtokens_owned
         if not wallets:
             new_token_scope["realtokens_owned"] = []
+            new_token_scope["mode"] = 'all'
             logger.info(
-                f"User {user_id} deleted the last wallet ({wallet_to_delete}); "
+                f"User {user_id} deleted the last wallet ({wallet_to_delete});"
                 f"reset token_scope['realtokens_owned'] to empty list."
+                f"reset token_scope['mode'] to all."
             )
         else:
             logger.info(
@@ -414,6 +416,7 @@ async def handle_wallet_text(update: Update, context: ContextTypes.DEFAULT_TYPE)
     
 
     new_token_scope = {**token_scope, "wallets": wallets}
+    new_token_scope["mode"] = "wallet"
     user_manager.update_user(user_id, token_scope=new_token_scope)
 
     # Clear the awaiting flag
