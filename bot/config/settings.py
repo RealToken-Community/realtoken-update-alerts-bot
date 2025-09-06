@@ -9,7 +9,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 FRENQUENCY_CHECKING_FOR_UPDATES = 90 # minutes
-FRENQUENCY_WALLET_UPDATE = 480 # minutes
+FRENQUENCY_WALLET_UPDATE = 2880 # minutes
 
 DEFAULT_LANGUAGE = "English"  # Fallback language
 

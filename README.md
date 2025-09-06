@@ -89,7 +89,7 @@ Some default settings of the bot can be customized in the file:
   Interval in minutes between two runs of the **main update cycle**, which checks if there are new updates on RealTokens (income distributions, price changes, etc.): `90`  
 
 - `FRENQUENCY_WALLET_UPDATE`  
-  Interval in minutes between two balance refresh operations for **all users’ RealTokens owned**: `1080`  
+  Interval in minutes between two balance refresh operations for **all users’ RealTokens owned**: `2880`  
 
 - `THRESHOLD_BALANCE_DEC`  
   Decimal threshold used to decide whether a RealToken is considered **owned** by a user.  
