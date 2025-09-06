@@ -47,7 +47,7 @@ async def run_update_cycle_and_notify(app: Application) -> None:
         if message:
             await app.bot.send_message(
                     chat_id=user_id,
-                    text=re.sub(r'([.()])', r'\\\1', message),
+                    text = re.sub(r'([.\-()])', r'\\\1', message),
                     parse_mode=ParseMode.MARKDOWN_V2
                 )
 
