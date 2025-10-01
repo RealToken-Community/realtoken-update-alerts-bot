@@ -44,7 +44,7 @@ async def run_update_cycle_and_notify(app: Application) -> None:
 
         message = filter_messages(lines_messages, user_id, prefs.notification_types, prefs.token_scope)
 
-        if message:
+        if message and message.strip(): # ensures the string has at least one non-whitespace character
             await app.bot.send_message(
                     chat_id=user_id,
                     text = re.sub(r'([.\-()])', r'\\\1', message),
