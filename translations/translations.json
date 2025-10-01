@@ -57,7 +57,7 @@
     "menu.notification_settings": "🔔 Paramètres de notification",
     "menu.set_language": "🌐 Définir la langue",
     "notifications.title": "🔔 *Vos paramètres de notification* 🔔",
-    "notifications.types.header": "1️⃣ *Types de notifica tion :*",
+    "notifications.types.header": "1️⃣ *Types de notification :*",
     "notifications.types.income": "*Update des revenus* _(loyers, intérêts, ...)_",
     "notifications.types.price": "*Update du prix du Token*",
     "notifications.types.other": "*Autres update* _(réserve de rénovation, ...)_",
