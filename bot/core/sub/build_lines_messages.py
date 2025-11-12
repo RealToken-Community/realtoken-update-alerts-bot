@@ -133,25 +133,36 @@ def build_lines_messages(new_history_items_by_uuid, realtoken_data, realtoken_hi
             )
         else:
             renovationReserve_line = ""
-            
+
         # rentedUnits
         if rentedUnits is not None:
             old_ru = get_latest_value_for_key(realtoken_history_data_last[uuid], 'rentedUnits')
             change_var = rentedUnits - old_ru
-            change_pct = (change_var / old_ru) * 100
-    
+        
+            # Only calculate percentage if old value is not zero
+            if old_ru != 0:
+                change_pct = (change_var / old_ru) * 100
+                has_pct = True
+            else:
+                change_pct = 0
+                has_pct = False
+        
             is_up = change_var > 0
             icon  = icon_up if is_up else icon_down
             arrow = arrow_up if is_up else arrow_down
-    
-            rentedUnits_line = (
-                translate("updates.rented_units.title", icon=icon) + "\n" +
-                (
+        
+            # Build the text line
+            if rentedUnits != 0 and has_pct:
+                rentedUnits_line = (
+                    translate("updates.rented_units.title", icon=icon) + "\n" +
                     translate("updates.rented_units.line", old=old_ru, new=rentedUnits, arrow=arrow, pct=abs(change_pct))
-                    if rentedUnits != 0
-                    else translate("updates.rented_units.line_no_pct", old=old_ru, new=rentedUnits)
                 )
-            )
+            else:
+                # Skip percentage if either old or new value is zero
+                rentedUnits_line = (
+                    translate("updates.rented_units.title", icon=icon) + "\n" +
+                    translate("updates.rented_units.line_no_pct", old=old_ru, new=rentedUnits)
+                )
         else:
             rentedUnits_line = ""
         
