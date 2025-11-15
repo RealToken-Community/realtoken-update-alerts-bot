@@ -11,6 +11,7 @@ from bot.core.sub import build_history_state
 from bot.config.settings import get_settings, REALTOKENS_LIST_URL, REALTOKEN_HISTORY_URL, FRENQUENCY_CHECKING_FOR_UPDATES, FRENQUENCY_WALLET_UPDATE
 from bot.services import I18n, UserManager, fetch_json
 from bot.services.utilities import list_to_dict_by_uuid, load_abis
+from bot.services.error_handler import global_error_handler
 from bot.task.job import job_update_and_notify, job_update_realtoken_owned
 from bot.handlers import (
     health,
@@ -61,6 +62,9 @@ def main() -> None:
     # Resgister callback
     app.add_handler(CallbackQueryHandler(set_language_callback, pattern=r"^lang_.+"))
     app.add_handler(CallbackQueryHandler(handle_notifications_settings_callback, pattern=f"^{CALLBACK_PREFIX}:"))
+
+    # Register the global error handler
+    app.add_error_handler(global_error_handler)
 
     # register job to trigger run_update_cycle_and_notify every FRENQUENCY_CHECKING_FOR_UPDATES 
     app.job_queue.run_repeating(
