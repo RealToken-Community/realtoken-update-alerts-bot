@@ -21,6 +21,8 @@ Users can customize notification types (income, price, other) and choose whether
 ### Configure environment
 
 All **sensitive information** (the bot token and RPC URLs) must be set as **environment variables**.  
+The application performs **very large multicall requests**, and many RPC providers (especially public RPCs) cannot handle requests of this size.  
+Make sure to **choose reliable, high-capacity RPC endpoints** and test them beforehand.
 
 You can do this in two ways:  
 
