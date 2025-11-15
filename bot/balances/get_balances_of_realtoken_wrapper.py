@@ -64,7 +64,7 @@ def get_balances_of_realtoken_wrapper(
     abi_realtoken_wrapper: List[Dict],
     abi_multicall3: List[Dict],
     *,
-    max_subcalls_per_multicall: int = 2000,
+    max_subcalls_per_multicall: int = 800,
 ) -> Dict[str, Dict[str, int]]:
     """
     Query getAllTokenBalancesOfUser(user) for each user via Multicall3.tryAggregate.
@@ -78,7 +78,7 @@ def get_balances_of_realtoken_wrapper(
         users_addresses: list of user addresses.
         abi_realtoken_wrapper: ABI that contains getAllTokenBalancesOfUser(address).
         abi_multicall3: Multicall3 ABI (must contain tryAggregate(bool,(address,bytes)[])).
-        max_subcalls_per_multicall: max number of sub-calls per multicall (default 1000).
+        max_subcalls_per_multicall: max number of sub-calls per multicall (default 800).
 
     Returns:
         { user_checksum: { token_checksum: raw_balance_int } }
@@ -133,7 +133,7 @@ def get_balances_of_realtoken_wrapper(
             for token_addr, bal in zip(token_addresses, token_balances):
                 if bal > 0:
                     user_map[token_addr] = bal
-        time.sleep(0.2)
+        time.sleep(0.5)
 
     return balances_result
 
