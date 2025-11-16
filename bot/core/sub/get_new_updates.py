@@ -9,7 +9,7 @@ HistoryState = Dict[str, Dict[str, Any]]
 HistoryItem = Dict[str, Any]
 TokenPayload = Dict[str, Any]
 
-def get_new_updates(app: Any, current_payload: Dict[str, Any], previous_history_state: HistoryState, new_history_state) -> Dict[str, List[Dict[str, Any]]]:
+def get_new_updates(app: Any, current_payload: Dict[str, Any], previous_history_state: HistoryState, new_history_state, realtoken_data) -> Dict[str, List[Dict[str, Any]]]:
     """
     Return newly added history items grouped by UUID, but only for UUIDs that already existed
     in the previous baseline and whose history length increased.
@@ -77,6 +77,16 @@ def get_new_updates(app: Any, current_payload: Dict[str, Any], previous_history_
         "Detected %d new update(s).",
         len(new_history_items_by_uuid)
     )
+    
+    for uuid, items in new_history_items_by_uuid.items():
+        short_name = (realtoken_data.get(uuid) or {}).get("shortName", "Unknown")
+        logger.info(
+            f"Token change summary:\n"
+            f"  Name: {short_name}\n"
+            f"  Update(s): {len(items)}\n"
+            f"  UUID: {uuid}"
+        )
+        
     logger.debug(new_history_items_by_uuid)
 
     return new_history_items_by_uuid

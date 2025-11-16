@@ -35,7 +35,7 @@ async def run_update_cycle_and_notify(app: Application) -> None:
 
     ### get new updates of realtoken history from community API ###
 
-    new_history_items_by_uuid = get_new_updates(app, realtoken_history_data_current, realtoken_history_state_last, realtoken_history_state_current)
+    new_history_items_by_uuid = get_new_updates(app, realtoken_history_data_current, realtoken_history_state_last, realtoken_history_state_current, realtoken_data)
 
     # Loop over user IDs and preferences and filter messages
     for user_id, prefs in user_manager.users.items():
