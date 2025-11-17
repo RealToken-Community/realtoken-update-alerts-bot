@@ -9,6 +9,13 @@ icon_down = "📉"
 arrow_up = "▲"
 arrow_down = "▼"
 
+def get_last_value(items, field):
+    """Return the last value for a field in the 'values' dict of items, or None."""
+    for entry in reversed(items):
+        if field in entry["values"]:
+            return entry["values"][field]
+    return None
+
 
 def build_lines_messages(new_history_items_by_uuid, realtoken_data, realtoken_history_data_last, user_manager, i18n, user_id):
     
@@ -20,18 +27,20 @@ def build_lines_messages(new_history_items_by_uuid, realtoken_data, realtoken_hi
 
     for uuid, new_history_item in new_history_items_by_uuid.items():
 
-        # we take the last item every time new_history_item[-1] as we should'n have multiples dates as new updates on the same cycle
-        
         realtoken_name = realtoken_data[uuid]['shortName']
-        date_obj = datetime.strptime(new_history_item[-1]['date'], "%Y%m%d")
-        netRentYear = new_history_item[-1]['values'].get('netRentYear')
-        tokenPrice = new_history_item[-1]['values'].get('tokenPrice')
-        underlyingAssetPrice = new_history_item[-1]['values'].get('underlyingAssetPrice')
-        totalInvestment = new_history_item[-1]['values'].get('totalInvestment')
-        initialMaintenanceReserve = new_history_item[-1]['values'].get('initialMaintenanceReserve')
-        renovationReserve = new_history_item[-1]['values'].get('renovationReserve')
-        rentedUnits = new_history_item[-1]['values'].get('rentedUnits')
 
+        # Use the latest date (arbitrary choice)
+        date_obj = datetime.strptime(new_history_item[-1]['date'], "%Y%m%d")
+        
+        # Find the last non-None value for each field
+        netRentYear = get_last_value(new_history_item, "netRentYear")
+        tokenPrice = get_last_value(new_history_item, "tokenPrice")
+        underlyingAssetPrice = get_last_value(new_history_item, "underlyingAssetPrice")
+        totalInvestment = get_last_value(new_history_item, "totalInvestment")
+        initialMaintenanceReserve = get_last_value(new_history_item, "initialMaintenanceReserve")
+        renovationReserve = get_last_value(new_history_item, "renovationReserve")
+        rentedUnits = get_last_value(new_history_item, "rentedUnits")
+        
         header_line = translate("updates.header", name=realtoken_name)
 
         # Token price line
