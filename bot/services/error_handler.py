@@ -18,4 +18,4 @@ async def global_error_handler(update, context):
         return
 
     # Log all other errors normally (with traceback)
-    logger.exception("Unhandled error while processing update: %s", err)
+    logger.exception(f"Unhandled error while processing update: {err}", exc_info=err)
