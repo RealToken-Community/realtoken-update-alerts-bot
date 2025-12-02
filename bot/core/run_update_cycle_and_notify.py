@@ -3,6 +3,7 @@ logger = logging.getLogger(__name__)
 
 from telegram.ext import Application
 from telegram.constants import ParseMode
+from telegram.error import Forbidden, TelegramError
 from bot.services import fetch_json
 from bot.config.settings import REALTOKENS_LIST_URL, REALTOKEN_HISTORY_URL
 from bot.services.utilities import list_to_dict_by_uuid
@@ -48,12 +49,29 @@ async def run_update_cycle_and_notify(app: Application) -> None:
     
             message = filter_messages(lines_messages, user_id, prefs.notification_types, prefs.token_scope)
     
-            if message and message.strip(): # ensures the string has at least one non-whitespace character
-                await app.bot.send_message(
+            if message and message.strip():  # ensures the string has at least one non-whitespace character
+                try:
+                    await app.bot.send_message(
                         chat_id=user_id,
-                        text = re.sub(r'([.\-()])', r'\\\1', message),
-                        parse_mode=ParseMode.MARKDOWN_V2
+                        text=re.sub(r'([.\-()])', r'\\\1', message),
+                        parse_mode=ParseMode.MARKDOWN_V2,
                     )
+                except Forbidden as e:
+                    # User blocked the bot
+                    logger.warning(
+                        "User %s blocked the bot. Error: %s",
+                        user_id,
+                        e,
+                    )
+                    continue
+                except TelegramError as e:
+                    # Any other Telegram-related error should not break the whole job
+                    logger.warning(
+                        "Failed to send message to user %s: %s",
+                        user_id,
+                        e,
+                    )
+                    continue
 
     # update new realtoken history
     app.bot_data["realtoken_history_state"] = realtoken_history_state_current
