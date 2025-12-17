@@ -4,6 +4,7 @@ logger = logging.getLogger(__name__)
 from telegram.ext import Application
 from telegram.constants import ParseMode
 from telegram.error import Forbidden, TelegramError
+from bot.services.send_telegram_alert import send_telegram_alert
 from bot.services import fetch_json
 from bot.config.settings import REALTOKENS_LIST_URL, REALTOKEN_HISTORY_URL
 from bot.services.utilities import list_to_dict_by_uuid
@@ -44,34 +45,41 @@ async def run_update_cycle_and_notify(app: Application) -> None:
     # Loop over user IDs and preferences and filter messages if there is at least a new item
     if len(new_history_items_by_uuid) > 0:
         for user_id, prefs in user_manager.users.items():
+
+            try:
     
-            lines_messages = build_lines_messages(new_history_items_by_uuid, realtoken_data, realtoken_history_data_last, user_manager, i18n, user_id)
+                lines_messages = build_lines_messages(new_history_items_by_uuid, realtoken_data, realtoken_history_data_last, user_manager, i18n, user_id)
+        
+                message = filter_messages(lines_messages, user_id, prefs.notification_types, prefs.token_scope)
+                logger.info(message)
+                if message and message.strip():  # ensures the string has at least one non-whitespace character
+                    try:
+                        await app.bot.send_message(
+                            chat_id=user_id,
+                            text=re.sub(r'([.\-()])', r'\\\1', message),
+                            parse_mode=ParseMode.MARKDOWN_V2,
+                        )
+                    except Forbidden as e:
+                        # User blocked the bot
+                        logger.warning("User %s blocked the bot. Error: %s", user_id, e)
+                        continue
+                    except TelegramError as e:
+                        # Any other Telegram-related error should not break the whole job
+                        logger.warning("Failed to send message to user %s: %s", user_id, e)
+                        send_telegram_alert(f"Failed to send message to user: {e}")
+                        continue
+            
+            except ZeroDivisionError as e:
+                # Skip this user for this cycle if a division by zero occurs
+                logger.warning("ZeroDivisionError for user %s, skipping user for this cycle: %s", user_id, e)
+                send_telegram_alert("ZeroDivisionError for user %s, skipping user for this cycle: %s", user_id, e)
+                continue
     
-            message = filter_messages(lines_messages, user_id, prefs.notification_types, prefs.token_scope)
-    
-            if message and message.strip():  # ensures the string has at least one non-whitespace character
-                try:
-                    await app.bot.send_message(
-                        chat_id=user_id,
-                        text=re.sub(r'([.\-()])', r'\\\1', message),
-                        parse_mode=ParseMode.MARKDOWN_V2,
-                    )
-                except Forbidden as e:
-                    # User blocked the bot
-                    logger.warning(
-                        "User %s blocked the bot. Error: %s",
-                        user_id,
-                        e,
-                    )
-                    continue
-                except TelegramError as e:
-                    # Any other Telegram-related error should not break the whole job
-                    logger.warning(
-                        "Failed to send message to user %s: %s",
-                        user_id,
-                        e,
-                    )
-                    continue
+            except Exception as e:
+                # Any unexpected error: skip user but keep the cycle alive
+                logger.exception("Unexpected error for user %s, skipping user for this cycle: %s", user_id, e)
+                send_telegram_alert("Unexpected error for user %s, skipping user for this cycle: %s", user_id, e)
+                continue
 
     # update new realtoken history
     app.bot_data["realtoken_history_state"] = realtoken_history_state_current

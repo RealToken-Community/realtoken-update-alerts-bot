@@ -1,5 +1,6 @@
 from datetime import datetime
 from bot.services.utilities import get_latest_value_for_key
+from bot.services.send_telegram_alert import send_telegram_alert
 
 import logging
 logger = logging.getLogger(__name__)
@@ -27,7 +28,12 @@ def build_lines_messages(new_history_items_by_uuid, realtoken_data, realtoken_hi
 
     for uuid, new_history_item in new_history_items_by_uuid.items():
 
-        realtoken_name = realtoken_data[uuid]['shortName']
+        if uuid not in realtoken_data:
+            logger.warning(f"Realtoken uuid not found: {uuid} in API")
+            send_telegram_alert(f"Realtoken uuid not found: {uuid} in API")
+            realtoken_name = "unknown name"
+        else:
+            realtoken_name = realtoken_data[uuid]['shortName']
 
         # Use the latest date (arbitrary choice)
         date_obj = datetime.strptime(new_history_item[-1]['date'], "%Y%m%d")
@@ -70,16 +76,31 @@ def build_lines_messages(new_history_items_by_uuid, realtoken_data, realtoken_hi
             old_income = (old_netRentYear / old_totalInvestment) * 100
             new_income = (netRentYear / totalInvestment) * 100
             change_var = new_income - old_income
-            change_pct = (change_var / old_income) * 100
+
+            # Only calculate percentage if old value is not zero
+            if old_income != 0:
+                change_pct = (change_var / old_income) * 100
+                has_pct = True
+            else:
+                change_pct = 0
+                has_pct = False
 
             is_up = change_var > 0
             icon  = icon_up if is_up else icon_down
             arrow = arrow_up if is_up else arrow_down
-    
-            income_line = (
-                translate("updates.income.title", icon=icon) + "\n" +
-                translate("updates.income.line", old=old_income, new=new_income, arrow=arrow, pct=abs(change_pct))
-            )
+
+            # Build the text line
+            if new_income and has_pct:
+                income_line = (
+                    translate("updates.income.title", icon=icon) + "\n" +
+                    translate("updates.income.line", old=old_income, new=new_income, arrow=arrow, pct=abs(change_pct))
+                )
+            else:
+                # Skip percentage if either old or new value is zero
+                income_line = (
+                    translate("updates.income.title", icon=icon) + "\n" +
+                    translate("updates.income.line_no_pct", old=old_income, new=new_income)
+                )
         else:
             income_line = ''
 
