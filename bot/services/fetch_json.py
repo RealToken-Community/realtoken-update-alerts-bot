@@ -1,6 +1,7 @@
 import requests, time
 from typing import Any, Optional
 from bot.services.logging_config import get_logger
+from bot.services.send_telegram_alert import send_telegram_alert
 logger = get_logger(__name__)
 
 def fetch_json(url: str, timeout: int = 20) -> Optional[Any]:
@@ -18,4 +19,5 @@ def fetch_json(url: str, timeout: int = 20) -> Optional[Any]:
         return resp.json()
     except requests.RequestException as e:
         logger.warning("Failed to fetch JSON from %s: %s", url, e)
+        send_telegram_alert("realtoken update alert bot: Failed to fetch JSON from %s: %s", url, e)
         return None

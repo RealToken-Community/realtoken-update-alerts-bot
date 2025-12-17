@@ -1,6 +1,6 @@
 from __future__ import annotations
 from telegram.error import BadRequest
-
+from bot.services.send_telegram_alert import send_telegram_alert
 from bot.services.logging_config import get_logger
 logger = get_logger(__name__)
 
@@ -19,3 +19,4 @@ async def global_error_handler(update, context):
 
     # Log all other errors normally (with traceback)
     logger.exception(f"Unhandled error while processing update: {err}", exc_info=err)
+    send_telegram_alert(f"Unhandled error while processing update: {err}", exc_info=err)

@@ -12,6 +12,7 @@ from bot.config.settings import get_settings, REALTOKENS_LIST_URL, REALTOKEN_HIS
 from bot.services import I18n, UserManager, fetch_json
 from bot.services.utilities import list_to_dict_by_uuid, load_abis
 from bot.services.error_handler import global_error_handler
+from bot.services.send_telegram_alert import send_telegram_alert
 from bot.task.job import job_update_and_notify, job_update_realtoken_owned
 from bot.handlers import (
     health,
@@ -83,6 +84,7 @@ def main() -> None:
     
     logger.info("Starting bot polling…")
     print("Starting bot polling…")
+    send_telegram_alert("realtoken update alert bot: Starting bot polling…")
     app.run_polling()
 
 
