@@ -51,7 +51,7 @@ async def run_update_cycle_and_notify(app: Application) -> None:
                 lines_messages = build_lines_messages(new_history_items_by_uuid, realtoken_data, realtoken_history_data_last, user_manager, i18n, user_id)
         
                 message = filter_messages(lines_messages, user_id, prefs.notification_types, prefs.token_scope)
-                logger.info(message)
+                
                 if message and message.strip():  # ensures the string has at least one non-whitespace character
                     try:
                         await app.bot.send_message(
