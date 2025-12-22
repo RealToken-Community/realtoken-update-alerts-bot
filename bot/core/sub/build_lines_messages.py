@@ -66,20 +66,20 @@ def build_lines_messages(new_history_items_by_uuid, realtoken_data, realtoken_hi
         else:
             tokenPrice_line = ""
 
-        # Income line
+        # Yield income line
         if netRentYear is not None or totalInvestment is not None:
             old_netRentYear = get_latest_value_for_key(realtoken_history_data_last[uuid], 'netRentYear')
             old_totalInvestment = get_latest_value_for_key(realtoken_history_data_last[uuid], 'totalInvestment')
             netRentYear = netRentYear or old_netRentYear
             totalInvestment = totalInvestment or old_totalInvestment
 
-            old_income = (old_netRentYear / old_totalInvestment) * 100
-            new_income = (netRentYear / totalInvestment) * 100
-            change_var = new_income - old_income
+            old_yield_income = (old_netRentYear / old_totalInvestment) * 100
+            new_yield_income = (netRentYear / totalInvestment) * 100
+            change_var = new_yield_income - old_yield_income
 
             # Only calculate percentage if old value is not zero
-            if old_income != 0:
-                change_pct = (change_var / old_income) * 100
+            if old_yield_income != 0:
+                change_pct = (change_var / old_yield_income) * 100
                 has_pct = True
             else:
                 change_pct = 0
@@ -90,19 +90,52 @@ def build_lines_messages(new_history_items_by_uuid, realtoken_data, realtoken_hi
             arrow = arrow_up if is_up else arrow_down
 
             # Build the text line
-            if new_income and has_pct:
-                income_line = (
+            if new_yield_income and has_pct:
+                yield_income_line = (
                     translate("updates.income.title", icon=icon) + "\n" +
-                    translate("updates.income.line", old=old_income, new=new_income, arrow=arrow, pct=abs(change_pct))
+                    translate("updates.income.line", old=old_yield_income, new=new_yield_income, arrow=arrow, pct=abs(change_pct))
                 )
             else:
                 # Skip percentage if either old or new value is zero
-                income_line = (
+                yield_income_line = (
                     translate("updates.income.title", icon=icon) + "\n" +
-                    translate("updates.income.line_no_pct", old=old_income, new=new_income)
+                    translate("updates.income.line_no_pct", old=old_yield_income, new=new_yield_income)
                 )
         else:
-            income_line = ''
+            yield_income_line = ''
+
+        # Annual income
+        if netRentYear is not None or totalInvestment is not None:
+            old_annual_income = old_tokenPrice * old_netRentYear / old_totalInvestment
+            new_annual_income = tokenPrice * netRentYear / totalInvestment
+            change_var = new_annual_income - old_annual_income
+
+            # Only calculate percentage if old value is not zero
+            if old_annual_income != 0:
+                change_pct = (change_var / old_annual_income) * 100
+                has_pct = True
+            else:
+                change_pct = 0
+                has_pct = False
+
+            is_up = change_var > 0
+            icon  = icon_up if is_up else icon_down
+            arrow = arrow_up if is_up else arrow_down
+
+            # Build the text line
+            if new_annual_income and has_pct:
+                annual_income_line = (
+                    translate("updates.annual_income.title", icon=icon) + "\n" +
+                    translate("updates.annual_income.line", old=old_annual_income, new=new_annual_income, arrow=arrow, pct=abs(change_pct))
+                )
+            else:
+                # Skip percentage if either old or new value is zero
+                annual_income_line = (
+                    translate("updates.incoannual_incomeme.title", icon=icon) + "\n" +
+                    translate("updates.annual_income.line_no_pct", old=old_annual_income, new=new_annual_income)
+                )
+        else:
+            annual_income_line = ''
 
         # underlyingAssetPrice
         if underlyingAssetPrice is not None:
@@ -200,7 +233,8 @@ def build_lines_messages(new_history_items_by_uuid, realtoken_data, realtoken_hi
             "uuid" : uuid,
             "header_line": header_line,
             "tokenPrice_line": tokenPrice_line,
-            "income_line": income_line,
+            "yield_income_line": yield_income_line,
+            "annual_income_line": annual_income_line,
             "underlyingAssetPrice_line": underlyingAssetPrice_line,
             "initialMaintenanceReserve_line": initialMaintenanceReserve_line,
             "renovationReserve_line": renovationReserve_line,

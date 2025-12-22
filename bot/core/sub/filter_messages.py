@@ -23,10 +23,11 @@ def filter_messages(lines_messages, user_id, notification_types, token_scope):
 
         # Conditionally add lines (each may be empty; push() filters them)
         if notification_types["income_updates"]:
-            push(lines_message["income_line"])
+            push(lines_message["yield_income_line"])
         if notification_types["price_token_updates"]:
             push(lines_message["tokenPrice_line"])
         if notification_types["other_updates"]:
+            push(lines_message["annual_income_line"])
             push(lines_message["underlyingAssetPrice_line"])
             push(lines_message["initialMaintenanceReserve_line"])
             push(lines_message["renovationReserve_line"])
