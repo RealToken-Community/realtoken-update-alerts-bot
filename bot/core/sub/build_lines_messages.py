@@ -105,7 +105,13 @@ def build_lines_messages(new_history_items_by_uuid, realtoken_data, realtoken_hi
             yield_income_line = ''
 
         # Annual income
-        if netRentYear is not None or totalInvestment is not None:
+        if netRentYear is not None:
+            if tokenPrice is None:
+                old_tokenPrice = get_latest_value_for_key(realtoken_history_data_last[uuid], "tokenPrice")
+                tokenPrice = old_tokenPrice
+            if totalInvestment is None:
+                old_totalInvestment = get_latest_value_for_key(realtoken_history_data_last[uuid], "totalInvestment")
+                totalInvestment = old_totalInvestment
             old_annual_income = old_tokenPrice * old_netRentYear / old_totalInvestment
             new_annual_income = tokenPrice * netRentYear / totalInvestment
             change_var = new_annual_income - old_annual_income
