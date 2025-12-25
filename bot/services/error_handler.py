@@ -35,7 +35,7 @@ async def global_error_handler(update, context):
 
     # Keep Telegram message short + useful
     alert_text = (
-        "🚨 Unhandled error while processing update\n"
+        "Realtoken update alert bot: Unhandled error while processing update\n"
         f"Error: {err}"
     )
     send_telegram_alert(alert_text)

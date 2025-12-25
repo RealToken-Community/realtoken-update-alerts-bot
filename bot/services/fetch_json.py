@@ -19,5 +19,5 @@ def fetch_json(url: str, timeout: int = 20) -> Optional[Any]:
         return resp.json()
     except requests.RequestException as e:
         logger.warning("Failed to fetch JSON from %s: %s", url, e)
-        send_telegram_alert("realtoken update alert bot: Failed to fetch JSON from %s: %s", url, e)
+        send_telegram_alert(f"realtoken update alert bot: Failed to fetch JSON from {url}: {e}")
         return None

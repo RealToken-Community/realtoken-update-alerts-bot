@@ -30,7 +30,7 @@ def build_lines_messages(new_history_items_by_uuid, realtoken_data, realtoken_hi
 
         if uuid not in realtoken_data:
             logger.warning(f"Realtoken uuid not found: {uuid} in API")
-            send_telegram_alert(f"Realtoken uuid not found: {uuid} in API")
+            send_telegram_alert(f"Realtoken update alert bot: Realtoken uuid not found: {uuid} in API")
             realtoken_name = "unknown name"
         else:
             realtoken_name = realtoken_data[uuid]['shortName']

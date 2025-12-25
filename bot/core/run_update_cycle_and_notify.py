@@ -66,19 +66,19 @@ async def run_update_cycle_and_notify(app: Application) -> None:
                     except TelegramError as e:
                         # Any other Telegram-related error should not break the whole job
                         logger.warning("Failed to send message to user %s: %s", user_id, e)
-                        send_telegram_alert(f"Failed to send message to user: {e}")
+                        send_telegram_alert(f"Realtoken update alert bot: Failed to send message to user: {e}")
                         continue
             
             except ZeroDivisionError as e:
                 # Skip this user for this cycle if a division by zero occurs
                 logger.warning("ZeroDivisionError for user %s, skipping user for this cycle: %s", user_id, e)
-                send_telegram_alert("ZeroDivisionError for user %s, skipping user for this cycle: %s", user_id, e)
+                send_telegram_alert("Realtoken update alert bot: ZeroDivisionError, skipping user for this cycle: {e}")
                 continue
     
             except Exception as e:
                 # Any unexpected error: skip user but keep the cycle alive
                 logger.exception("Unexpected error for user %s, skipping user for this cycle: %s", user_id, e)
-                send_telegram_alert("Unexpected error for user %s, skipping user for this cycle: %s", user_id, e)
+                send_telegram_alert(f"Realtoken update alert bot: Unexpected error, skipping user for this cycle: {e}")
                 continue
 
     # update new realtoken history
