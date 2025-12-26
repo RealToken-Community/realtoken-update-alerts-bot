@@ -13,6 +13,7 @@ from bot.services import I18n, UserManager, fetch_json
 from bot.services.utilities import list_to_dict_by_uuid, load_abis
 from bot.services.error_handler import global_error_handler
 from bot.services.send_telegram_alert import send_telegram_alert
+from bot.services.on_post_shutdown import on_post_shutdown
 from bot.task.job import job_update_and_notify, job_update_realtoken_owned
 from bot.handlers import (
     health,
@@ -36,7 +37,13 @@ def main() -> None:
 
     # Build the Telegram application
     jq = JobQueue()
-    app = Application.builder().token(settings.bot_token).job_queue(jq).build()
+    app = (
+        Application.builder()
+        .token(settings.bot_token)
+        .job_queue(jq)
+        .post_shutdown(on_post_shutdown)
+        .build()
+    )
 
     # Fetch RealToken data (as-is from the API)
     realtoken_data = list_to_dict_by_uuid(fetch_json(REALTOKENS_LIST_URL) or [])
