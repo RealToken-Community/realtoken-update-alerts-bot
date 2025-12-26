@@ -5,13 +5,12 @@ logger = get_logger(__name__)
 
 from typing import Callable, Any, List, Dict
 from functools import lru_cache
-import time
-import os, json
-
 from web3 import Web3
+import time
+import os
+
 
 from dotenv import load_dotenv
-
 load_dotenv()
 
 
@@ -24,12 +23,13 @@ def _load_rpc_urls() -> List[str]:
     raw = os.getenv("RPC_URLS", "").strip()
     if not raw:
         raise RuntimeError("RPC_URLS missing")
-    try:
-        urls = json.loads(raw)
-    except json.JSONDecodeError as e:
-        raise RuntimeError(f"RPC_URLS is not valid JSON: {e}")
-    if not isinstance(urls, list) or not all(isinstance(u, str) for u in urls):
-        raise RuntimeError("RPC_URLS must be a JSON array of strings")
+
+    # Split by comma and clean spaces
+    urls = [u.strip() for u in raw.split(",") if u.strip()]
+
+    if not urls:
+        raise RuntimeError("RPC_URLS must contain at least one URL")
+
     return urls
 
 
