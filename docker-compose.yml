@@ -1,0 +1,16 @@
+services:
+  realtoken_update_alerts_bot:
+    container_name: realtoken_update_alerts_bot
+
+    build:
+      context: .
+      dockerfile: Dockerfile
+
+    env_file:
+      - .env
+
+    volumes:
+      - ./logs:/app/logs
+      - ./user_configurations:/app/user_configurations
+
+    restart: unless-stopped

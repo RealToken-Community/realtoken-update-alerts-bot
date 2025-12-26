@@ -1,5 +1,6 @@
 # Realtoken Update Alerts Bot
 
+
 **Get alerts about your Realtokens.**  
 This Telegram bot automatically tracks updates for all **Realtokens** and notifies users whenever there are changes such as:
 
@@ -16,45 +17,50 @@ Users can customize notification types (income, price, other) and choose whether
 
 ---
 
-## Installation Guide
+## Table of Contents
 
-### Configure environment
+- [Realtoken Update Alerts Bot](#realtoken-update-alerts-bot)
+  - [System Requirements](#system-requirements)
+  - [Configuration](#configuration)
+    - [Configure Environment Variables](#configure-environment-variables)
+    - [Configure the bot name and description](#configure-the-bot-name-and-description)
+    - [Other configuration](#other-configuration)
+  - [Installation & Execution](#installation--execution)
+    - [Option A — Docker (Recommended)](#option-a--docker-recommended)
+    - [Option B — Manual Installation (Without Docker)](#option-b--manual-installation-without-docker)
+  - [Bot core features](#bot-core-features)
+  - [Project structure](#project-structure)
 
-All **sensitive information** (the bot token and RPC URLs) must be set as **environment variables**.  
-The application performs **very large multicall requests**, and many RPC providers (especially public RPCs) cannot handle requests of this size.  
-Make sure to **choose reliable, high-capacity RPC endpoints** and test them beforehand.
+  ---
 
-You can do this in two ways:  
+## System Requirements
 
-1. **System environment variables** – define them directly in your operating system.  
-2. **`.env` file** – alternatively, place them inside a `.env` file at the project root (recommended for local development).  
+- Python 3.11+
+- Docker & Docker Compose (optional but recommended)
 
-Use **one method or the other**. 
+---
 
-> **Note:** RPC URLs must be defined as a **list of strings on a single line, without spaces**.  
+## Configuration
 
-An example configuration file is provided: [`.env.example`](./.env.example).  
-Copy it to `.env` and update the values with your own secrets.  
+### Configure Environment Variables
 
-Example:  
+An example configuration file is provided: `.env.example`.  
+Copy it to `.env` and update the values with your own secrets.
 
 ```env
-# Telegram Bot Token
-BOT_REALTOKENS_UPDATE_ALERTS_TOKEN=xxx:xxx
+BOT_REALTOKENS_UPDATE_ALERTS_TOKEN=
+RPC_URLS=https://rpc.ankr.com/gnosis/...,https://gnosis.drpc.org
 
-# RPC URLs for Gnosis chain (list of strings, one line, no spaces)
-RPC_URLS=["https://gnosis-mainnet.blastapi.io/...","https://rpc.ankr.com/gnosis/...","https://lb.nodies.app/v1/..."]
-```  
-### **Install Python Dependencies**
-
-```bash
-# Optional but recommended: create and activate a virtual environment
-python3 -m venv .venv
-source .venv/bin/activate
-
-# Install packages listed in requirements.txt
-pip install -r requirements.txt
+# Telegram alerts [optional]
+TELEGRAM_ALERT_BOT_TOKEN=
+TELEGRAM_ALERT_GROUP_ID=
 ```
+
+> **Note:**  
+> RPC URLs must be provided as a comma-separated string on a single line, without spaces.  
+> For alerts, you can configure a Telegram bot and a Telegram group: the bot (using `TELEGRAM_ALERT_BOT_TOKEN`) must be added to the telegram chat group (`TELEGRAM_ALERT_GROUP_ID`) to receive automatic notifications about critical events such as failures or application stops.
+
+---
 
 ### Configure the bot name and description
 
@@ -76,6 +82,8 @@ To configure the bot’s identity with the BotFather, update the following field
 **Picture**
 
 Use the image located at `docs/assets/logo.png`
+
+---
 
 ### Other configuration
 
@@ -109,16 +117,61 @@ Some default settings of the bot can be customized in the file:
 
 ---
 
-## Running the Project
+## Installation & Execution
 
-#### Start the bot
+### Option A — Docker (Recommended)
+
+The project includes a **ready-to-use Docker integration**.
+
+From the **project root directory** (where `docker-compose.yml` is located), build
+(or rebuild) and start the service with:
+
 ```bash
-python3 -m bot.main
+docker compose up --build -d
 ```
+
+This single command:
+- Rebuilds the image if the source code changed
+- Recreates the existing container without duplication
+- Starts the service from a clean state
+
+
+
+To stop the service:
+
+```bash
+docker compose stop
+```
+
+> For detailed information about what is happening inside the Docker container, see the section below.
 
 ---
 
-## Features
+### Option B — Manual Installation (Without Docker)
+
+#### 1. Create and Activate a Python Virtual Environment
+
+```bash
+# Optional but recommended: create and activate a virtual environment
+python3 -m venv .venv
+source .venv/bin/activate
+```
+
+#### 2. Install python dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+#### 3. Running the Project
+
+```bash
+# Start the bot
+python3 -m bot.main
+```
+---
+
+## Bot core features
 
 - **Automatic monitoring** of the RealToken community API *(no API key required)*:  
   - Realtokens list: [https://api.realtoken.community/v1/token](https://api.realtoken.community/v1/token)  
@@ -145,7 +198,7 @@ python3 -m bot.main
 
 ---
 
-## Project Structure
+## Project structure
 
 ```
 realtoken-update-alerts-bot/
