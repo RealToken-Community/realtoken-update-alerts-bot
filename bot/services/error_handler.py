@@ -31,7 +31,10 @@ async def global_error_handler(update, context):
         return
 
     # 3) Everything else: log with traceback + send Telegram alert (text only)
-    logger.exception(f"Unhandled error while processing update: {err}", exc_info=True)
+    logger.error(
+        f"Unhandled error while processing update: {err}",
+        exc_info=(type(err), err, err.__traceback__),
+    )
 
     # Keep Telegram message short + useful
     alert_text = (
