@@ -1,3 +1,4 @@
+import json
 from typing import Any, Dict, List, Iterable, Optional
 from bot.config.settings import THRESHOLD_BALANCE_DEC
 from bot.services.logging_config import get_logger
@@ -28,8 +29,6 @@ def list_to_dict_by_uuid(items: Optional[List[Dict[str, Any]]]) -> Optional[Dict
             continue
         result[uuid] = item
     return result
-
-
 
 
 
@@ -78,8 +77,57 @@ def get_latest_value_for_key(
     return (default, None) if return_date else default
 
 
-import json
-from typing import Dict, Any
+def get_first_value_for_key(
+    item: Dict[str, Any],
+    key: str,
+    *,
+    default: Any = None,
+    return_date: bool = False,
+) -> Any:
+    """
+    Return the first (oldest) value for `key` found inside the nested `values`
+    dictionaries of the `history` list in `item`.
+
+    The function keeps the history sorted by date in descending order
+    (most recent first), but iterates in reverse order so that the first
+    chronological occurrence of `key` is returned.
+
+    If the key never appears in the history, `default` is returned.
+
+    Args:
+        item: A dictionary containing a 'history' key with a list of entries.
+              Each entry should contain:
+                - 'date': a string in 'YYYYMMDD' format
+                - 'values': a dict of fields (e.g. 'netRentYear', 'tokenPrice', etc.)
+        key: The field name to look for inside each entry's 'values'.
+        default: Value to return if `key` is not found in any history entry.
+        return_date: If True, return a tuple (value, date_str).
+                     If False, return only the value.
+
+    Returns:
+        The first chronological value for `key`
+        (or (value, date_str) if return_date=True),
+        or `default` if the key is not found.
+    """
+    history: Iterable[Dict[str, Any]] = item.get("history") or []
+
+    # Sort history by date descending (most recent first).
+    # String comparison is safe for 'YYYYMMDD' format.
+    # Entries without a date fall to the end.
+    history_sorted = sorted(
+        history,
+        key=lambda h: h.get("date") or "",
+        reverse=True,
+    )
+
+    # Iterate in reverse order to access the oldest entries first
+    for entry in reversed(history_sorted):
+        values: Dict[str, Any] = entry.get("values") or {}
+        if key in values:
+            return (values[key], entry.get("date")) if return_date else values[key]
+
+    return (default, None) if return_date else default
+
 
 
 def load_abis(path: str = "ressources/abi.json") -> Dict[str, Any]:
