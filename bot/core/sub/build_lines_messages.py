@@ -118,7 +118,7 @@ def build_lines_messages(new_history_items_by_uuid, realtoken_data, realtoken_hi
             old_netRentYear = get_latest_value_for_key(realtoken_history_data_last[uuid], 'netRentYear')
             netRentYear = netRentYear or old_netRentYear
 
-            old_yield_income_initial_valuation = (initial_netRentYear / initial_totalInvestment) * 100
+            old_yield_income_initial_valuation = (old_netRentYear / initial_totalInvestment) * 100
             new_yield_income_initial_valuation = (netRentYear / initial_totalInvestment) * 100
             change_var = new_yield_income_initial_valuation - old_yield_income_initial_valuation
 
