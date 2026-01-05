@@ -1,6 +1,4 @@
 from __future__ import annotations
-
-import traceback
 from telegram.error import BadRequest, NetworkError, TimedOut, RetryAfter
 
 from bot.services.send_telegram_alert import send_telegram_alert
