@@ -1,3 +1,4 @@
+import re
 from datetime import datetime
 from bot.services.utilities import get_latest_value_for_key, get_first_value_for_key
 from bot.services.send_telegram_alert import send_telegram_alert
@@ -17,6 +18,10 @@ def get_last_value(items, field):
             return entry["values"][field]
     return None
 
+def escape_markdown_punctuation(text: str) -> str:
+    return re.sub(r'([().])', r'\\\1', text)
+
+
 
 def build_lines_messages(new_history_items_by_uuid, realtoken_data, realtoken_history_data_last, user_manager, i18n, user_id):
     
@@ -34,6 +39,12 @@ def build_lines_messages(new_history_items_by_uuid, realtoken_data, realtoken_hi
             realtoken_name = "unknown name"
         else:
             realtoken_name = realtoken_data[uuid]['shortName']
+        
+        # Compute Realt URL for the realtoken
+        realt_url_base = "https://realt.co/product/"
+        full_name = realtoken_data[uuid]["fullName"]
+        slug = "-".join(full_name.replace(",", "").split())
+        realt_url_realtoken = f"{realt_url_base}{slug}"
 
         # Use the latest date (arbitrary choice)
         date_obj = datetime.strptime(new_history_item[-1]['date'], "%Y%m%d")
@@ -49,7 +60,7 @@ def build_lines_messages(new_history_items_by_uuid, realtoken_data, realtoken_hi
         renovationReserve = get_last_value(new_history_item, "renovationReserve")
         rentedUnits = get_last_value(new_history_item, "rentedUnits")
         
-        header_line = translate("updates.header", name=realtoken_name)
+        header_line = translate("updates.header", name=f"[{realtoken_name}]({realt_url_realtoken})") # link syntax in markdown v2: [text](url)
 
         # Token price line
         if tokenPrice is not None:
@@ -284,14 +295,14 @@ def build_lines_messages(new_history_items_by_uuid, realtoken_data, realtoken_hi
         lines_message = {
             "uuid" : uuid,
             "header_line": header_line,
-            "tokenPrice_line": tokenPrice_line,
-            "yield_income_new_valuation_line": yield_income_new_valuation_line,
-            "yield_income_initial_valuation_line": yield_income_initial_valuation_line,
-            "annual_income_line": annual_income_line,
-            "underlyingAssetPrice_line": underlyingAssetPrice_line,
-            "initialMaintenanceReserve_line": initialMaintenanceReserve_line,
-            "renovationReserve_line": renovationReserve_line,
-            "rentedUnits_line": rentedUnits_line
+            "tokenPrice_line": escape_markdown_punctuation(tokenPrice_line),
+            "yield_income_new_valuation_line": escape_markdown_punctuation(yield_income_new_valuation_line),
+            "yield_income_initial_valuation_line": escape_markdown_punctuation(yield_income_initial_valuation_line),
+            "annual_income_line": escape_markdown_punctuation(annual_income_line),
+            "underlyingAssetPrice_line": escape_markdown_punctuation(underlyingAssetPrice_line),
+            "initialMaintenanceReserve_line": escape_markdown_punctuation(initialMaintenanceReserve_line),
+            "renovationReserve_line": escape_markdown_punctuation(renovationReserve_line),
+            "rentedUnits_line": escape_markdown_punctuation(rentedUnits_line)
         }
         lines_messages.append(lines_message)
 
